@@ -5,9 +5,10 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     entry: "./client/app/app.js",
     output: {
-        path: "./client/",
+        path: "./public/",
         filename: "bundle.js"
     },
+    devtool: "source-map",
     devServer: {
         port: 7000,
         inline: true,
@@ -20,19 +21,28 @@ module.exports = {
             loaders: ['ng-annotate', 'babel']
         }, {
             test: /\.html$/,
-            loader: 'raw'
+            loaders: ["raw"]
         }, {
             test: /\.css$/,
-            loader: "style-loader!css-loader"
+            loaders: ["style-loader", "css-loader", "sass-loader"]
         }, {
             test: /\.svg$/,
             loader: 'file'
         }, {
-            test: /\.(scss|sass)$/,
-            loader: 'style!css!sass'
+            test: /\.scss$/,
+            loaders: ["style-loader", "css-loader?sourceMap", "sass-loader?sourceMap"]
         }]
     },
     resolve: {
         extensions: ['', '.js']
-    }
+    },
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            },
+            mangling: false,
+            sourceMap: false
+        })
+    ]
 }
